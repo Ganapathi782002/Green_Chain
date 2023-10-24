@@ -1,17 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 import { Nav1, Nav2, Nav3 } from "../Components/index";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Link from "next/link";
 export default () => {
   const [state, setState] = useState(false);
   const { currentUser, connectWallet } = useContext(TrackingContext);
 
-  const navigation = [
-    { title: "Home ", path: "#" },
-    { title: "Farmers", path: "#" },
-    { title: "Hotels/Restaurents", path: "#" },
-    
-  ];
+  
 
   useEffect(() => {
     document.onclick = (e) => {
@@ -52,17 +47,24 @@ export default () => {
             state ? "block" : "hidden"
           } `}
         >
-          <ul className="justify-center items-center space-y-6 md:flex md:space-x-6 md:space-y-0">
-            {navigation.map((item, idx) => {
-              return (
-                <li key={idx} className="text-black-900 hover:text-black-900">
-                  <a href={item.path} className="block">
-                    {item.title}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+            <Link href="/">
+              <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
+                  Home
+              </button>
+            </Link>
+            <Link href="/farmers">
+              <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
+                Farmers
+              </button>
+            </Link>
+            <Link href="/restaurant">
+              <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
+                Hotels/Restaurants
+              </button>
+            </Link>
+          
+          
+          
           <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
             {currentUser ? (
               <p className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex">

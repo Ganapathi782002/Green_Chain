@@ -51,7 +51,7 @@ export default ({ getModel, setGetModel, getShipment }) => {
           </div>
           <div className="max-w-sm mx-auto py-3 space-y-3 text-center">
             <h4 className="text-lg font-medium text-gray-800">
-              Product Tracting Details
+              Product Tracking Details
             </h4>
 
             <form onSubmit={(e) => e.preventDefault()}>
@@ -80,7 +80,7 @@ export default ({ getModel, setGetModel, getShipment }) => {
                 <p>Recevier: {singleShipmentData.receiver.slice(0, 25)}...</p>
                 <p>PickupTime: {converTime(singleShipmentData.pickupTime)}</p>
                 <p>
-                  DeliveryTime: {converTime(singleShipmentData.deliveryTime)}
+                  Delivery: Assured Delivery 
                 </p>
                 <p>Distance: {singleShipmentData.distance}</p>
                 <p>Price: {singleShipmentData.price}</p>

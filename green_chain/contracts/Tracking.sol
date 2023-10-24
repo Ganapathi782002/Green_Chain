@@ -15,6 +15,7 @@ contract Tracking {
         bool isPaid;
     }
 
+
     mapping(address => Shipment[]) public shipments;
     uint256 public shipmentCount;
 

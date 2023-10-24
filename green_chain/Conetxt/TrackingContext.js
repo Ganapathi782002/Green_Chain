@@ -2,24 +2,29 @@ import React, { useState, useEffect } from "react";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 import tracking from "../Conetxt/Tracking.json";
 const ContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+// const FarmerContractAddress = ""; // Enter your Farmer contract address
+// const FarmerContractABI = []; // Enter your Farmer contract ABI
 const ContractABI = tracking.abi;
 
-//---FETCHING SMART CONTRACT
+// FETCHING SMART CONTRACT
 const fetchContract = (signerOrProvider) =>
   new ethers.Contract(ContractAddress, ContractABI, signerOrProvider);
+
+// const fetchFarmerContract = (signerOrProvider) =>
+//   new ethers.Contract(FarmerContractAddress, FarmerContractABI, signerOrProvider);
 
 export const TrackingContext = React.createContext();
 
 export const TrackingProvider = ({ children }) => {
-  //STATE VARIABLE
+  // STATE VARIABLES
   const DappName = "Product Tracking Dapp";
   const [currentUser, setCurrentUser] = useState("");
 
+  // Function to create a shipment
   const createShipment = async (items) => {
-    console.log(items);
     const { receiver, pickupTime, distance, price } = items;
 
     try {
@@ -37,14 +42,35 @@ export const TrackingProvider = ({ children }) => {
           value: ethers.utils.parseUnits(price, 18),
         }
       );
+
       await createItem.wait();
       console.log(createItem);
       location.reload();
     } catch (error) {
-      console.log("Some went wrong", error);
+      console.log("Something went wrong", error);
     }
   };
 
+  // Function to get farmer information
+  // const getFarmerInfo = async () => {
+  //   try {
+  //     const web3Modal = new Web3Modal();
+  //     const connection = await web3Modal.connect();
+  //     const provider = new ethers.providers.Web3Provider(connection);
+  //     const signer = provider.getSigner();
+  //     const farmerContract = fetchFarmerContract(signer);
+
+  //     // Call the farmer contract function to get farmer information
+  //     const farmerInfo = await farmerContract.getFarmerInfo();
+
+  //     // Handle the retrieved farmer information as needed
+  //     console.log("Farmer Information:", farmerInfo);
+  //   } catch (error) {
+  //     console.log("Error fetching farmer information", error);
+  //   }
+  // };
+
+  // Function to get all shipments
   const getAllShipment = async () => {
     try {
       const provider = new ethers.providers.JsonRpcProvider();
@@ -64,10 +90,11 @@ export const TrackingProvider = ({ children }) => {
 
       return allShipments;
     } catch (error) {
-      console.log("error want, getting shipment");
+      console.log("Error fetching shipments", error);
     }
   };
 
+  // Function to get the count of shipments for the current user
   const getShipmentsCount = async () => {
     try {
       if (!window.ethereum) return "Install MetaMask";
@@ -80,14 +107,14 @@ export const TrackingProvider = ({ children }) => {
       const shipmentsCount = await contract.getShipmentsCount(accounts[0]);
       return shipmentsCount.toNumber();
     } catch (error) {
-      console.log("error want, getting shipment");
+      console.log("Error getting shipments count", error);
     }
   };
 
+  // Function to complete a shipment
   const completeShipment = async (completeShip) => {
-    console.log(completeShip);
+    const { receiver, index } = completeShip;
 
-    const { recevier, index } = completeShip;
     try {
       if (!window.ethereum) return "Install MetaMask";
 
@@ -102,7 +129,7 @@ export const TrackingProvider = ({ children }) => {
 
       const transaction = await contract.completeShipment(
         accounts[0],
-        recevier,
+        receiver,
         index,
         {
           gasLimit: 300000,
@@ -113,10 +140,11 @@ export const TrackingProvider = ({ children }) => {
       console.log(transaction);
       location.reload();
     } catch (error) {
-      console.log("Wrong completeShipment", error);
+      console.log("Error completing shipment", error);
     }
   };
 
+  // Function to get a single shipment by index
   const getShipment = async (index) => {
     console.log(index * 1);
     try {
@@ -130,7 +158,7 @@ export const TrackingProvider = ({ children }) => {
       const contract = fetchContract(provider);
       const shipment = await contract.getShipment(accounts[0], index * 1);
 
-      const SingleShiplent = {
+      const SingleShipment = {
         sender: shipment[0],
         receiver: shipment[1],
         pickupTime: shipment[2].toNumber(),
@@ -141,14 +169,15 @@ export const TrackingProvider = ({ children }) => {
         isPaid: shipment[7],
       };
 
-      return SingleShiplent;
+      return SingleShipment;
     } catch (error) {
-      console.log("Sorry no shipment");
+      console.log("Error fetching shipment", error);
     }
   };
 
+  // Function to start a shipment
   const startShipment = async (getProduct) => {
-    const { reveiver, index } = getProduct;
+    const { receiver, index } = getProduct;
 
     try {
       if (!window.ethereum) return "Install MetaMask";
@@ -164,7 +193,7 @@ export const TrackingProvider = ({ children }) => {
       const contract = fetchContract(signer);
       const shipment = await contract.startShipment(
         accounts[0],
-        reveiver,
+        receiver,
         index * 1,
         {
           gasLimit: 300000,
@@ -175,10 +204,11 @@ export const TrackingProvider = ({ children }) => {
       console.log(shipment);
       location.reload();
     } catch (error) {
-      console.log("Sorry no shipment", error);
+      console.log("Error starting shipment", error);
     }
   };
-  //---CHECK WALLET CONNECTED
+
+  // Function to check if a wallet is connected
   const checkIfWalletConnected = async () => {
     try {
       if (!window.ethereum) return "Install MetaMask";
@@ -193,11 +223,11 @@ export const TrackingProvider = ({ children }) => {
         return "No account";
       }
     } catch (error) {
-      return "not connected";
+      return "Not connected";
     }
   };
 
-  //---CONNET WALLET FUNCTION
+  // Function to connect a wallet
   const connectWallet = async () => {
     try {
       if (!window.ethereum) return "Install MetaMask";

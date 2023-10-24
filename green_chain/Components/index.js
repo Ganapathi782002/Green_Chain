@@ -7,6 +7,11 @@ import Profile from "./Profile";
 import GetShipment from "./GetShipment";
 import CompleteShipment from "./CompleteShipment";
 import StartShipment from "./StartShipment";
+import Farmers from "./Farmers";
+import FarmerRegister from "./FarmerRegister";
+import Restaurant from "./Restaurant";
+import RestaurantRegister from "./RestaurantRegister";
+import FarmerLogin from "./FarmerLogin";
 //SVG
 import Nav1 from "./SVG/Nav1";
 import Nav2 from "./SVG/Nav2";
@@ -25,6 +30,11 @@ export {
   GetShipment,
   CompleteShipment,
   StartShipment,
+  Farmers,
+  FarmerRegister,
+  FarmerLogin,
+  Restaurant,
+  RestaurantRegister,
   //SVG
   Nav1,
   Nav2,

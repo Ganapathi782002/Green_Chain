@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-
-//INTERNAL IMPORT
 import {
   Table,
   Form,
@@ -9,10 +7,14 @@ import {
   CompleteShipment,
   GetShipment,
   StartShipment,
+  Farmers,
+  FarmerRegister,
+  Restaurant,
+  RestaurantRegister,
 } from "../Components/index";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 
-const index = () => {
+const Index = () => {
   const {
     currentUser,
     createShipment,
@@ -23,22 +25,23 @@ const index = () => {
     getShipmentsCount,
   } = useContext(TrackingContext);
 
-  //STATE VARIABLE
+
   const [createShipmentModel, setCreateShipmentModel] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [startModal, setStartModal] = useState(false);
   const [completeModal, setCompleteModal] = useState(false);
   const [getModel, setGetModel] = useState(false);
-  //DATA STATE VARIABLE
-  const [allShipmentsdata, setallShipmentsdata] = useState();
+
+  const [allShipmentsdata, setAllShipmentsData] = useState([]);
 
   useEffect(() => {
     const getCampaignsData = getAllShipment();
-
-    return async () => {
+    const fetchData = async () => {
       const allData = await getCampaignsData;
-      setallShipmentsdata(allData);
+      setAllShipmentsData(allData);
     };
+
+    fetchData();
   }, []);
 
   return (
@@ -49,7 +52,6 @@ const index = () => {
         setGetModel={setGetModel}
         setStartModal={setStartModal}
       />
-
       <Table
         setCreateShipmentModel={setCreateShipmentModel}
         allShipmentsdata={allShipmentsdata}
@@ -70,18 +72,15 @@ const index = () => {
         setCompleteModal={setCompleteModal}
         completeShipment={completeShipment}
       />
-      <GetShipment
-        getModel={getModel}
-        setGetModel={setGetModel}
-        getShipment={getShipment}
-      />
+      <GetShipment getModel={getModel} setGetModel={setGetModel} getShipment={getShipment} />
       <StartShipment
         startModal={startModal}
         setStartModal={setStartModal}
         startShipment={startShipment}
       />
+
     </>
   );
 };
 
-export default index;
+export default Index;
