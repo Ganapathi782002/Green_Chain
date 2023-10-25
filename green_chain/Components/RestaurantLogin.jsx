@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 
-const FarmerLogin = () => {
+const RestaurantLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +31,7 @@ const FarmerLogin = () => {
 
   return (
     <div className="container mx-auto max-w-md p-4 border rounded-lg shadow-lg" style={{ marginTop: "5px" }}>
-      <h1 className="text-2xl font-bold mb-4">Farmer Login</h1>
+      <h1 className="text-2xl font-bold mb-4">Restaurant Login</h1>
       <form onSubmit={signIn}>
         <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -89,4 +89,4 @@ const FarmerLogin = () => {
   );
 };
 
-export default FarmerLogin;
+export default RestaurantLogin;

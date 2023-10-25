@@ -11,6 +11,7 @@ import Farmers from "./Farmers";
 import FarmerRegister from "./FarmerRegister";
 import Restaurant from "./Restaurant";
 import RestaurantRegister from "./RestaurantRegister";
+import RestaurantLogin from "./RestaurantLogin";
 import FarmerLogin from "./FarmerLogin";
 //SVG
 import Nav1 from "./SVG/Nav1";
@@ -35,6 +36,7 @@ export {
   FarmerLogin,
   Restaurant,
   RestaurantRegister,
+  RestaurantLogin,
   //SVG
   Nav1,
   Nav2,

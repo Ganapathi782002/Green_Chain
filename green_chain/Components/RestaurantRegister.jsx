@@ -1,10 +1,17 @@
 import React, { useState } from "react";
+import { db, auth } from "../firebaseConfig"; // Import Firebase auth
+import { collection, addDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RestaurantRegistration = () => {
   const [formData, setFormData] = useState({
     name: "",
     location: "",
     contact: "",
+    email: "", // Add email field
+    password: "", // Add password field
     wasteType: [],
     cookedWastes: {},
     uncookedWastes: {},
@@ -51,10 +58,38 @@ const RestaurantRegistration = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your form submission logic here
-    console.log(formData);
+
+    try {
+      // Create a new user with email and password in Firebase Authentication
+      const { email, password } = formData;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Add the form data to Firestore
+      const restaurantRef = collection(db, "Restaurants");
+      await addDoc(restaurantRef, { ...formData, userId: user.uid }); // Associate the user with the restaurant
+
+      // Display a success toast
+      toast.success("Restaurant registration successful!", { position: "top-right" });
+
+      // Clear the form data if needed
+      setFormData({
+        name: "",
+        location: "",
+        contact: "",
+        email: "",
+        password: "",
+        wasteType: [],
+        cookedWastes: {},
+        uncookedWastes: {},
+      });
+    } catch (error) {
+      // Display an error toast
+      toast.error("Registration failed. Please check your information.", { position: "top-right" });
+      console.error("Error registering restaurant", error);
+    }
   };
 
   return (
@@ -73,6 +108,36 @@ const RestaurantRegistration = () => {
             onChange={handleInputChange}
             required
             maxLength="150"
+            className="border rounded-lg px-3 py-2 w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+            placeholder="Enter your email"
+            className="border rounded-lg px-3 py-2 w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+            placeholder="Enter your password"
             className="border rounded-lg px-3 py-2 w-full"
           />
         </div>
@@ -176,6 +241,9 @@ const RestaurantRegistration = () => {
           Submit
         </button>
       </form>
+
+      {/* Toast container */}
+      <ToastContainer />
     </div>
   );
 };

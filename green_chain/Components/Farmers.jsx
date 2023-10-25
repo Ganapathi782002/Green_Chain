@@ -16,11 +16,11 @@ const Farmers = () => {
             Login
           </button>
         </Link>
-        <button
-          className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105"
-        >
-          View All Farmers
-        </button>
+        <Link href="/viewallfarmers">
+          <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105">
+            View All Farmers
+          </button>
+        </Link>
       </div>
     </div>
   );

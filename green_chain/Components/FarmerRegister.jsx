@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { auth as firebaseAuth,db } from "../firebaseConfig";
 import { collection, getDocs, addDoc, query } from "firebase/firestore"; // Import Firestore functions
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
+import { toast, ToastContainer } from "react-toastify"; // Import react-toastify
+import "react-toastify/dist/ReactToastify.css";
 
 const FarmerRegister = () => {
   // State to hold form data
@@ -68,6 +69,10 @@ const FarmerRegister = () => {
       await addDoc(collection(db, "Farmers"), formData);
 
       // Handle success, e.g., show a success message or redirect
+      toast.success("Farmer registration successful!", {
+        position: "top-right",
+        autoClose: 5000, // Auto close the notification after 5 seconds
+      });
       console.log("Farmer registration successful!");
 
       // Clear the form data if needed
@@ -82,7 +87,10 @@ const FarmerRegister = () => {
         grade: "A+",
       });
     } catch (error) {
-      // Handle errors, e.g., show an error message
+      toast.error("Error registering farmer", {
+        position: "top-right",
+        autoClose: 5000, // Auto close the notification after 5 seconds
+      });
       console.error("Error registering farmer", error);
     }
   };
@@ -225,6 +233,7 @@ const FarmerRegister = () => {
           Submit
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 };

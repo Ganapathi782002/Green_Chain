@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-const Farmers = () => {
+const Restaurant = () => {
   return (
     <div>
       <div
@@ -12,12 +12,19 @@ const Farmers = () => {
             Register
           </button>
         </Link>
-        <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105">
-          View All Restaurants
-        </button>
+        <Link href="/restaurantslogin">
+          <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300 transform hover:scale-105">
+            Login
+          </button>
+        </Link>
+        <Link href="/viewallrestaurants">
+          <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105">
+            View All Restaurants
+          </button>
+        </Link>
       </div>
     </div>
   );
 };
 
-export default Farmers;
+export default Restaurant;
