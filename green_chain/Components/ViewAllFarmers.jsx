@@ -29,6 +29,17 @@ const ViewAllFarmers = () => {
     setExpanded(id === expanded ? null : id);
   };
 
+  const sendEmailToFarmer = (farmerEmail) => {
+    const subject = "Green Chain";
+    const body = "A Restaurant is requested for a tie-up with you! Reply whether you want to accept or decline";
+    
+    // Create a "mailto" link
+    const mailtoLink = `mailto:${farmerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Open the user's email client
+    window.location.href = mailtoLink;
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Farmers Listing</h1>
@@ -50,6 +61,7 @@ const ViewAllFarmers = () => {
                 <p><strong>Farm Size:</strong> {farmer.farmSize}</p>
                 <p><strong>Cultivation Type:</strong> {farmer.cultivationType}</p>
                 <p><strong>Grade:</strong> {farmer.grade}</p>
+                <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105" onClick={() => sendEmailToFarmer(farmer.email)}>Send Email</button>
               </div>
             )}
           </div>
