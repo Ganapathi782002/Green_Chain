@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import emailjs from "@emailjs/browser";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ViewAllFarmers = () => {
   const [farmers, setFarmers] = useState([]);
@@ -29,15 +32,29 @@ const ViewAllFarmers = () => {
     setExpanded(id === expanded ? null : id);
   };
 
-  const sendEmailToFarmer = (farmerEmail) => {
-    const subject = "Green Chain";
-    const body = "A Restaurant is requested for a tie-up with you! Reply whether you want to accept or decline";
-    
-    // Create a "mailto" link
-    const mailtoLink = `mailto:${farmerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const sendEmailToFarmer = async (farmerEmail) => {
+    try {
+      const templateParams = {
+        to_email: farmerEmail, // Set the recipient's email address
+        from_name: 'Your Name', // Replace with your name
+        message: 'Your custom message goes here.', // Replace with your custom message
+      };
 
-    // Open the user's email client
-    window.location.href = mailtoLink;
+      const response = await emailjs.send(
+        'service_myontes', // Replace with your service ID
+        'template_o1otf6h', // Replace with your template ID
+        templateParams,
+        'rhp-i4OeiW7-BMsb1' // Replace with your user ID
+      );
+
+      console.log('Email sent successfully:', response);
+
+      // Handle success (e.g., show a success message to the user)
+    } catch (error) {
+      console.error('Error sending email:', error);
+
+      // Handle the error (e.g., show an error message to the user)
+    }
   };
 
   return (
