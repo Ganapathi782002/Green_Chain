@@ -2,11 +2,15 @@ import { useEffect, useState, useContext } from "react";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 import { Nav1, Nav2, Nav3 } from "../Components/index";
 import Link from "next/link";
+import { auth } from "../firebaseConfig";
+import { ToastContainer, toast } from "react-toastify";
+import { signOut } from "firebase/auth";
+
 export default () => {
   const [state, setState] = useState(false);
   const { currentUser, connectWallet } = useContext(TrackingContext);
 
-  
+
 
   useEffect(() => {
     document.onclick = (e) => {
@@ -15,13 +19,22 @@ export default () => {
     };
   }, []);
 
+  const signout = () => {
+
+    signOut(auth).then(() => {
+      toast.success("Logout successful!", { position: "top-right" });
+      window.location.reload();
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
   return (
     <nav
-      className={`bg-green-600 pb-5 md:text-sm ${
-        state
-          ? "shadow-lg rounded-xl border mx-2 mt-2 md:shadow-none md:border-none md:mx-2 md:mt-0"
-          : ""
-      }`}
+      className={`bg-green-600 pb-5 md:text-sm ${state
+        ? "shadow-lg rounded-xl border mx-2 mt-2 md:shadow-none md:border-none md:mx-2 md:mt-0"
+        : ""
+        }`}
     >
       <div className="gap-x-14 items-center max-w-screen-xl mx-auto px-4 md:flex md:px-8">
         <div className="flex items-center justify-between py-5 md:block">
@@ -43,28 +56,27 @@ export default () => {
           </div>
         </div>
         <div
-          className={`flex-1 items-center mt-8 md:mt-0 md:flex ${
-            state ? "block" : "hidden"
-          } `}
+          className={`flex-1 items-center mt-8 md:mt-0 md:flex ${state ? "block" : "hidden"
+            } `}
         >
-            <Link href="/">
-              <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
-                  Home
-              </button>
-            </Link>
-            <Link href="/farmers">
-              <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
-                Farmers
-              </button>
-            </Link>
-            <Link href="/restaurant">
-              <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
-                Hotels/Restaurants
-              </button>
-            </Link>
-          
-          
-          
+          <Link href="/">
+            <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
+              Home
+            </button>
+          </Link>
+          <Link href="/farmers">
+            <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
+              Farmers
+            </button>
+          </Link>
+          <Link href="/restaurant">
+            <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
+              Hotels/Restaurants
+            </button>
+          </Link>
+
+
+
           <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
             {currentUser ? (
               <p className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex">
@@ -80,6 +92,15 @@ export default () => {
               </button>
             )}
           </div>
+
+          {auth.currentUser && (
+            <div className="">
+              <button onClick={()=>signout()} className="ml-4 flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover.bg-gray-700 active.bg-gray-900 rounded-full md.inline-flex">
+                Sign Out
+              </button>
+            </div>
+          )}
+
         </div>
       </div>
     </nav>

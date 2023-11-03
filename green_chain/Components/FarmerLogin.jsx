@@ -14,8 +14,10 @@ const FarmerLogin = () => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Display a success toast
-        toast.success("Login successful!", { position: "top-right" });
+        
+        toast.success("Login successful", { position: "top-right" });
+        
+        
         //console.log(userCredential);
       })
       .catch((error) => {
