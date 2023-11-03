@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { auth as firebaseAuth,db } from "../firebaseConfig";
-import { collection, getDocs, addDoc, query } from "firebase/firestore"; // Import Firestore functions
+import { collection, getDocs, addDoc, query, where } from "firebase/firestore"; // Import Firestore functions
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { toast, ToastContainer } from "react-toastify"; // Import react-toastify
 import "react-toastify/dist/ReactToastify.css";
 
 const FarmerRegister = () => {
   // State to hold form data
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    accountID: "",
     location: "",
     contact: "",
     farmSize: "",
@@ -50,10 +55,27 @@ const FarmerRegister = () => {
       [name]: value,
     });
   };
+  
+  const checkAccountIDExists = async (accountID) => {
+    const farmersRef = collection(db, "Farmers");
+    const accountIDQuery = query(farmersRef, where("accountID", "==", accountID));
+
+    const snapshot = await getDocs(accountIDQuery);
+    return !snapshot.empty;
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const accountIDExists = await checkAccountIDExists(formData.accountID);
+
+    if (accountIDExists) {
+      toast.error("Account ID already exists. Please Enter Your Account ID.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
 
     try {
       // Add the form data to Firestore
@@ -80,6 +102,7 @@ const FarmerRegister = () => {
         name: "",
         email: "",
         password: "",
+        accountID: "",
         location: "",
         contact: "",
         farmSize: "",
@@ -132,18 +155,42 @@ const FarmerRegister = () => {
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             name="password"
             value={formData.password}
             onChange={handleInputChange}
             required
             placeholder="Enter your password"
+            className="border rounded-lg px-3 py-2 w-full pr-10"
+          />
+          <button
+            type="button"
+            className="absolute right-0 top-4.5 bottom-0 m-auto px-3 py-2 flex items-center text-blue-500 hover:text-gray-800"
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="accountID" className="block text-sm font-medium text-gray-700">
+            Account ID (Mandatory)
+          </label>
+          <input
+            type="text"
+            id="accountID"
+            name="accountID"
+            value={formData.accountID}
+            onChange={handleInputChange}
+            required
+            maxLength="75"
+            placeholder="Enter your Account ID"
             className="border rounded-lg px-3 py-2 w-full"
           />
         </div>

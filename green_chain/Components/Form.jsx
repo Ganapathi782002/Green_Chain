@@ -1,10 +1,8 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
-export default ({
-  setCreateShipmentModel,
-  createShipmentModel,
-  createShipment,
-}) => {
+export default ({ setCreateShipmentModel, createShipmentModel, createShipment }) => {
   const [shipment, setShipment] = useState({
     receiver: "",
     pickupTime: "",
@@ -12,13 +10,37 @@ export default ({
     price: "",
   });
 
+  const [farmersData, setFarmersData] = useState([]);
+
+  useEffect(() => {
+    // Fetch all farmers' data from Firestore
+    const fetchFarmersData = async () => {
+      const farmersRef = collection(db, "Farmers");
+      const farmersSnapshot = await getDocs(farmersRef);
+
+      const farmers = [];
+      farmersSnapshot.forEach((doc) => {
+        const data = doc.data();
+        farmers.push({
+          id: doc.id,
+          name: data.name,
+          city: data.location, // Assuming the location field contains city information
+        });
+      });
+      setFarmersData(farmers);
+    };
+
+    fetchFarmersData();
+  }, []);
+
   const createItem = async () => {
     try {
       await createShipment(shipment);
     } catch (error) {
-      console.log("Wrong creating item");
+      console.log("Error creating item");
     }
   };
+
   return createShipmentModel ? (
     <div className="fixed inset-0 z-10 overflow-y-auto">
       <div
@@ -55,17 +77,26 @@ export default ({
             </p>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="relative mt-3">
-                <input
-                  type="text"
-                  placeholder="receiver"
-                  className="w-full pl-5 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                {/* Dropdown for selecting the receiver */}
+                <select
+                  value={shipment.receiver}
                   onChange={(e) =>
                     setShipment({
                       ...shipment,
                       receiver: e.target.value,
                     })
                   }
-                />
+                  className="w-full pl-5 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                >
+                  <option value="">
+                    Select a receiver
+                  </option>
+                  {farmersData.map((farmer) => (
+                    <option key={farmer.id} value={farmer.accountID}>
+                      <strong>{farmer.name}</strong> ({farmer.city})
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="relative mt-3">
                 <input
@@ -83,7 +114,7 @@ export default ({
               <div className="relative mt-3">
                 <input
                   type="text"
-                  placeholder="Quantity(in KG)"
+                  placeholder="Quantity (in KG)"
                   className="w-full pl-5 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                   onChange={(e) =>
                     setShipment({
@@ -106,10 +137,9 @@ export default ({
                   }
                 />
               </div>
-
               <button
                 onClick={() => createItem()}
-                className="block w-full mt-3 py-3 px-4 font-medium text-sm text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg ring-offset-2 ring-indigo-600 focus:ring-2"
+                className="block w-full mt-3 py-3 px-4 font-medium text-sm text-center text-white bg-indigo-600 hover-bg-indigo-500 active-bg-indigo-700 rounded-lg ring-offset-2 ring-indigo-600 focus-ring-2"
               >
                 Create Shipment
               </button>

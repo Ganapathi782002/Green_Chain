@@ -5,6 +5,8 @@ import Link from "next/link";
 import { auth } from "../firebaseConfig";
 import { ToastContainer, toast } from "react-toastify";
 import { signOut } from "firebase/auth";
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
 
 export default () => {
   const [state, setState] = useState(false);
@@ -20,6 +22,28 @@ export default () => {
         setShowRestaurantsOptions(false);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const startIntro = () => {
+      const intro = introJs();
+
+      intro.setOptions({
+        steps: [
+          {
+            element: document.querySelector('.connect-wallet-btn'), // Replace with the actual selector for your button
+            intro: 'Click here to connect your wallet.',
+            position: 'bottom',
+          },
+          // Add more steps for other elements if needed
+        ],
+      });
+
+      intro.start();
+    };
+
+    // Start the tour when the component is mounted
+    startIntro();
   }, []);
 
   const signout = () => {
@@ -155,7 +179,7 @@ export default () => {
           ) : (
             <button
               onClick={() => connectWallet()}
-              className="flex items-center justify-center gap-x-1 py-2 px-4 text-white
+              className="connect-wallet-btn flex items-center justify-center gap-x-1 py-2 px-4 text-white
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
               >
                 Connect Wallet
