@@ -84,24 +84,79 @@ export default () => {
             >
               Farmers
             </button>
-          </Link>
-          <Link href="/restaurant">
-            <button className="menu-btn px-3 text-black-500 hover:text-gray-800">
-              Hotels/Restaurants
+            {showFarmersOptions && (
+              <ul className="absolute dropdown-options space-y-1 mt-2 bg-white border rounded-lg shadow-lg text-black-500">
+                <Link href="/farmerslogin">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Login
+                  </li>
+                </Link>
+                <Link href="/farmersregistration">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Register
+                  </li>
+                </Link>
+                <Link href="/viewallfarmers">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    View All Farmers
+                  </li>
+                </Link>
+                <Link href="#">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                     Tracking
+                  </li>
+                </Link>
+              </ul>
+            )}
+          </div>
+          <div className="relative">
+            <button
+              className="menu-btn px-3 ml-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
+              font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
+              onClick={() => 
+                {
+                  setShowRestaurantsOptions(!showRestaurantsOptions)
+                  setShowFarmersOptions(false)
+              }}
+            >
+              Restaurants
             </button>
-          </Link>
-
-
-
-          <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
-            {currentUser ? (
-              <p className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex">
-                {currentUser.slice(0, 25)}..
-              </p>
-            ) : (
-              <button
-                onClick={() => connectWallet()}
-                className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
+            {showRestaurantsOptions && (
+              <ul className="absolute dropdown-options space-y-1 mt-2 bg-white border rounded-lg shadow-lg text-black-500">
+                <Link href="/restaurantslogin">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Login
+                  </li>
+                </Link>
+                <Link href="/restaurantsregistration">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Register
+                  </li>
+                </Link>
+                <Link href="/viewallrestaurants">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    View All Restaurants
+                  </li>
+                </Link>
+                <Link href="#">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Tracking
+                  </li>
+                </Link>
+              </ul>
+            )}
+          </div>
+        </div>
+        <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
+          {currentUser ? (
+            <p className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex">
+              {currentUser.slice(0, 25)}..
+            </p>
+          ) : (
+            <button
+              onClick={() => connectWallet()}
+              className="flex items-center justify-center gap-x-1 py-2 px-4 text-white
+              font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
               >
                 Connect Wallet
                 <Nav3 />
