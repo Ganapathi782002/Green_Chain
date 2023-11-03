@@ -1,5 +1,4 @@
-import images from "../Images/index";
-import Image from "next/image";
+import React from 'react';
 
 export default ({
   setOpenProfile,
@@ -9,51 +8,47 @@ export default ({
 }) => {
   const team = [
     {
-      avatar: images.compShipment,
+      text: 'Complete Shipment',
     },
     {
-      avatar: images.getShipment,
+      text: 'Get Shipment',
     },
     {
-      avatar: images.startShipment,
+      text: 'Start Shipment',
     },
     {
-      avatar: images.userProfile,
+      text: 'User Profile',
     },
     {
-      avatar: images.shipCount,
+      text: 'Ship Count',
     },
-    
   ];
 
   const openModelBox = (text) => {
-    if (text === 1) {
+    if (text === 'Complete Shipment') {
       setCompleteModal(true);
-    } else if (text === 2) {
+    } else if (text === 'Get Shipment') {
       setGetModel(true);
-    } else if (text === 3) {
+    } else if (text === 'Start Shipment') {
       setStartModal(true);
-    } else if (text === 4) {
+    } else if (text === 'User Profile') {
       setOpenProfile(true);
     }
   };
+
   return (
     <section className="py-0 pb-14">
       <div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="mt-12">
           <ul className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
-            {team.map((item, i) => (
-              <li key={i}>
-                <div
-                  onClick={() => openModelBox(i + 1)}
-                  className="w-full h-60 sm:h-52 md:h-56"
+            {team.map((item, index) => (
+              <li key={index}>
+                <button
+                  onClick={() => openModelBox(item.text)}
+                  className="w-full h-60 sm:h-52 md:h-56 bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold rounded-xl p-4 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-700 transition duration-300 ease-in-out"
                 >
-                  <Image
-                    src={item.avatar}
-                    className="w-full h-full object-cover object-center shadow-md rounded-xl"
-                    alt=""
-                  />
-                </div>
+                  {item.text}
+                </button>
               </li>
             ))}
           </ul>
