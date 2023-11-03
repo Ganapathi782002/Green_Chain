@@ -7,14 +7,10 @@ import {
   CompleteShipment,
   GetShipment,
   StartShipment,
-  Farmers,
-  FarmerRegister,
-  Restaurant,
-  RestaurantRegister,
 } from "../Components/index";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 
-const Index = () => {
+const Tracking = () => {
   const {
     currentUser,
     createShipment,
@@ -83,4 +79,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Tracking;

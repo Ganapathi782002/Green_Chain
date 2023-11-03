@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { auth } from "../firebaseConfig";
+
 
 const Farmers = () => {
 
@@ -12,9 +14,9 @@ const Farmers = () => {
           </button>
         </Link>
         <Link href="/farmerslogin">
-          <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300 transform hover:scale-105">
+          {!auth.currentUser && ( <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300 transform hover:scale-105">
             Login
-          </button>
+          </button>)}
         </Link>
         <Link href="/viewallfarmers">
           <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105">

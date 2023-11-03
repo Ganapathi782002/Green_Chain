@@ -13,6 +13,7 @@ import Restaurant from "./Restaurant";
 import RestaurantRegister from "./RestaurantRegister";
 import RestaurantLogin from "./RestaurantLogin";
 import FarmerLogin from "./FarmerLogin";
+import Tracking from "./Tracking";
 //SVG
 import Nav1 from "./SVG/Nav1";
 import Nav2 from "./SVG/Nav2";
@@ -31,6 +32,7 @@ export {
   GetShipment,
   CompleteShipment,
   StartShipment,
+  Tracking,
   Farmers,
   FarmerRegister,
   FarmerLogin,
