@@ -14,7 +14,7 @@ import {
 } from "../Components/index";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 
-const Home = () => {
+const Index = () => {
   const {
     currentUser,
     createShipment,
@@ -84,4 +84,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Index;
