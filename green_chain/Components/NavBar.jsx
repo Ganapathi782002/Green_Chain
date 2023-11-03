@@ -101,7 +101,7 @@ export default () => {
                     View All Farmers
                   </li>
                 </Link>
-                <Link href="#">
+                <Link href="/tracking">
                   <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
                      Tracking
                   </li>
@@ -138,7 +138,7 @@ export default () => {
                     View All Restaurants
                   </li>
                 </Link>
-                <Link href="#">
+                <Link href="/tracking">
                   <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
                     Tracking
                   </li>
