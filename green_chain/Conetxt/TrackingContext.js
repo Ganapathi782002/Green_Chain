@@ -186,7 +186,7 @@ export const TrackingProvider = ({ children }) => {
     }
   
     // Log the receiver address to the console
-    console.log("Receiver Address:", receiver);
+    console.log("Receiver Address in Context:", receiver);
 
     try {
       if (!window.ethereum) return "Install MetaMask";
