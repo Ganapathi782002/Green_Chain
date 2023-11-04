@@ -179,6 +179,15 @@ export const TrackingProvider = ({ children }) => {
   const startShipment = async (getProduct) => {
     const { receiver, index } = getProduct;
 
+    if (!receiver || !receiver.match(/^0x[0-9a-fA-F]{40}$/)) {
+      // Handle invalid or empty receiver address
+      console.error("Invalid or empty receiver address");
+      return;
+    }
+  
+    // Log the receiver address to the console
+    console.log("Receiver Address:", receiver);
+
     try {
       if (!window.ethereum) return "Install MetaMask";
 

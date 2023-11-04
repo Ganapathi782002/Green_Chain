@@ -8,6 +8,7 @@ export default ({ startModal, setStartModal, startShipment }) => {
   });
 
   const startShipping = () => {
+    console.log("Receiver Address:", getProduct.reveiver);
     startShipment(getProduct);
   };
   return startModal ? (
