@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import Web3 from "web3";
+
+function textToEthereumAddress(text) {
+  if (text && text.match(/^0x[0-9a-fA-F]{40}$/)) {
+    // If it's a valid Ethereum address, return the checksummed address
+    return Web3.utils.toChecksumAddress(text);
+  } else {
+    // Handle the case where the text is not a valid Ethereum address
+    throw new Error('Invalid Ethereum address format');
+  }
+}
 
 export default ({ setCreateShipmentModel, createShipmentModel, createShipment }) => {
   const [shipment, setShipment] = useState({
@@ -11,23 +22,35 @@ export default ({ setCreateShipmentModel, createShipmentModel, createShipment })
   });
 
   const [farmersData, setFarmersData] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Fetch all farmers' data from Firestore
     const fetchFarmersData = async () => {
-      const farmersRef = collection(db, "Farmers");
-      const farmersSnapshot = await getDocs(farmersRef);
+      try {
+        const farmersRef = collection(db, "Farmers");
+        const farmersSnapshot = await getDocs(farmersRef);
 
-      const farmers = [];
-      farmersSnapshot.forEach((doc) => {
-        const data = doc.data();
-        farmers.push({
-          id: doc.id,
-          name: data.name,
-          city: data.location, // Assuming the location field contains city information
+        const farmers = [];
+        farmersSnapshot.forEach((doc) => {
+          const data = doc.data();
+
+          // Check if accountID is a valid Ethereum address
+          const accountID = textToEthereumAddress(data.accountID);
+
+          farmers.push({
+            id: doc.id,
+            name: data.name,
+            city: data.location, // Assuming the location field contains city information
+            accountID: accountID, // Pass the Ethereum address to the receiver field
+          });
         });
-      });
-      setFarmersData(farmers);
+
+        setFarmersData(farmers);
+      } catch (error) {
+        // Handle any errors that occur during data fetching
+        setError(error.message);
+      }
     };
 
     fetchFarmersData();
@@ -92,12 +115,13 @@ export default ({ setCreateShipmentModel, createShipmentModel, createShipment })
                     Select a receiver
                   </option>
                   {farmersData.map((farmer) => (
-                    <option key={farmer.id} value={farmer.accountID}>
+                    <option key={farmer.id} value={textToEthereumAddress(farmer.accountID)}>
                       <strong>{farmer.name}</strong> ({farmer.city})
                     </option>
                   ))}
                 </select>
               </div>
+              {error && <p className="text-red-500">{error}</p>}
               <div className="relative mt-3">
                 <input
                   type="date"
