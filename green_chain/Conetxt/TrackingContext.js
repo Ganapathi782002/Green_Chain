@@ -217,6 +217,86 @@ export const TrackingProvider = ({ children }) => {
     }
   };
 
+  const markReceivedByTransporter = async (getProduct) => {
+    const { receiver, index } = getProduct;
+  
+    if (!receiver || !receiver.match(/^0x[0-9a-fA-F]{40}$/)) {
+      // Handle invalid or empty receiver address
+      console.error("Invalid or empty receiver address");
+      return;
+    }
+  
+    // Log the receiver address to the console
+    console.log("Receiver Address in Context:", receiver);
+  
+    try {
+      if (!window.ethereum) return "Install MetaMask";
+  
+      const accounts = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+  
+      const web3Modal = new Web3Modal();
+      const connection = await web3Modal.connect();
+      const provider = new ethers.providers.Web3Provider(connection);
+      const signer = provider.getSigner();
+      const contract = fetchContract(signer);
+      const shipment = await contract.markShipmentReceivedByTransporter(
+        accounts[0],
+        index * 1,
+        {
+          gasLimit: 300000,
+        }
+      );
+  
+      shipment.wait();
+      console.log(shipment);
+      location.reload();
+    } catch (error) {
+      console.log("Error marking shipment as 'Received by Transporter'", error);
+    }
+  };
+
+  const markInCustomsInspection = async (getProduct) => {
+    const { receiver, index } = getProduct;
+  
+    if (!receiver || !receiver.match(/^0x[0-9a-fA-F]{40}$/)) {
+      // Handle invalid or empty receiver address
+      console.error("Invalid or empty receiver address");
+      return;
+    }
+  
+    // Log the receiver address to the console
+    console.log("Receiver Address in Context:", receiver);
+  
+    try {
+      if (!window.ethereum) return "Install MetaMask";
+  
+      const accounts = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+  
+      const web3Modal = new Web3Modal();
+      const connection = await web3Modal.connect();
+      const provider = new ethers.providers.Web3Provider(connection);
+      const signer = provider.getSigner();
+      const contract = fetchContract(signer);
+      const shipment = await contract.markShipmentInCustomsInspection(
+        accounts[0],
+        index * 1,
+        {
+          gasLimit: 300000,
+        }
+      );
+  
+      shipment.wait();
+      console.log(shipment);
+      location.reload();
+    } catch (error) {
+      console.log("Error marking shipment as 'In Customs Inspection'", error);
+    }
+  };
+
   // Function to check if a wallet is connected
   const checkIfWalletConnected = async () => {
     try {
@@ -264,6 +344,8 @@ export const TrackingProvider = ({ children }) => {
         completeShipment,
         getShipment,
         startShipment,
+        markInCustomsInspection,
+        markReceivedByTransporter,
         getShipmentsCount,
         DappName,
         currentUser,

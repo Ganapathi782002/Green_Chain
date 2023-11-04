@@ -7,6 +7,8 @@ export default ({
   setCompleteModal,
   setGetModel,
   setStartModal,
+  setTransportModal,
+  setCustomsModal,
 }) => {
   const [userRole, setUserRole] = useState(null);
 
@@ -51,6 +53,12 @@ export default ({
     {
       text: 'Complete Shipment',
     },
+    {
+      text: 'Transport',
+    },
+    {
+      text: 'Customs',
+    },
   ];
 
   const openModelBox = (text) => {
@@ -65,6 +73,12 @@ export default ({
     } else if (text === 'Complete Shipment') {
       setCompleteModal(true);
     }
+    else if (text === 'Transport') {
+      setTransportModal(true);
+    }
+    else if (text === 'Customs') {
+      setCustomsModal(true);
+    }
   };
 
   console.log('User Role:', userRole);
@@ -74,8 +88,7 @@ export default ({
       <div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="mt-12">
           <ul className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
-            {userRole === 'restaurant owner' &&
-              servicesForRestaurantOwner.map((item, index) => (
+              {servicesForRestaurantOwner.map((item, index) => (
                 <li key={index}>
                   <button
                     onClick={() => openModelBox(item.text)}

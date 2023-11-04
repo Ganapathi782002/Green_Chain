@@ -7,6 +7,8 @@ import {
   CompleteShipment,
   GetShipment,
   StartShipment,
+  Transport,
+  Customs,
 } from "../Components/index";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 
@@ -15,6 +17,8 @@ const Tracking = () => {
     currentUser,
     createShipment,
     getAllShipment,
+    markInCustomsInspection,
+    markReceivedByTransporter,
     completeShipment,
     getShipment,
     startShipment,
@@ -27,6 +31,8 @@ const Tracking = () => {
   const [startModal, setStartModal] = useState(false);
   const [completeModal, setCompleteModal] = useState(false);
   const [getModel, setGetModel] = useState(false);
+  const [transportModal, setTransportModal] = useState(false);
+  const [customsModal, setCustomsModal] = useState(false);
 
   const [allShipmentsdata, setAllShipmentsData] = useState([]);
 
@@ -47,6 +53,8 @@ const Tracking = () => {
         setCompleteModal={setCompleteModal}
         setGetModel={setGetModel}
         setStartModal={setStartModal}
+        setCustomsModal={setCustomsModal}
+        setTransportModal={setTransportModal}
       />
       <Table
         setCreateShipmentModel={setCreateShipmentModel}
@@ -74,7 +82,16 @@ const Tracking = () => {
         setStartModal={setStartModal}
         startShipment={startShipment}
       />
-
+      <Transport
+        transportModal={ transportModal}
+        setTransportModal={setTransportModal}
+        markReceivedByTransporter={markReceivedByTransporter}
+      />
+      <Customs
+        customsModal={customsModal}
+        setCustomsModal={setCustomsModal}
+        markInCustomsInspection={markInCustomsInspection}
+      />
     </>
   );
 };

@@ -2,7 +2,14 @@
 pragma solidity ^0.8.0;
 
 contract Tracking {
-    enum ShipmentStatus { PENDING, IN_TRANSIT, DELIVERED }
+    enum ShipmentStatus {
+        PENDING,
+        IN_TRANSIT,
+        RECEIVED_BY_TRANSPORTER, 
+        IN_CUSTOMS_INSPECTION,  
+        DELIVERED
+    }
+
 
     struct Shipment {
         address sender;
@@ -37,6 +44,8 @@ contract Tracking {
     event ShipmentInTransit(address indexed sender, address indexed receiver, uint256 pickupTime);
     event ShipmentDelivered(address indexed sender, address indexed receiver, uint256 deliveryTime);
     event ShipmentPaid(address indexed sender, address indexed receiver, uint256 amount);
+    event ShipmentReceivedByTransporter(address indexed sender, address indexed receiver, uint256 pickupTime);
+    event ShipmentInCustomsInspection(address indexed sender, address indexed receiver, uint256 pickupTime);
 
     constructor() {
         shipmentCount = 0;
@@ -78,13 +87,35 @@ contract Tracking {
 
         emit ShipmentInTransit(_sender, _receiver, shipment.pickupTime);
     }
+    function markShipmentReceivedByTransporter(address _sender, uint256 _index) public {
+            Shipment storage shipment = shipments[_sender][_index];
+
+            require(shipment.status == ShipmentStatus.IN_TRANSIT, "Shipment is not in transit.");
+
+            shipment.status = ShipmentStatus.RECEIVED_BY_TRANSPORTER;
+
+                emit ShipmentReceivedByTransporter(_sender, shipment.receiver, shipment.pickupTime);
+    }
+
+    function markShipmentInCustomsInspection(address _sender, uint256 _index) public {
+            Shipment storage shipment = shipments[_sender][_index];
+
+            require(shipment.status == ShipmentStatus.RECEIVED_BY_TRANSPORTER, "Shipment not received by transporter.");
+            require(shipment.status != ShipmentStatus.IN_CUSTOMS_INSPECTION, "Shipment is already in customs inspection.");
+            require(!shipment.isPaid, "Shipment is already paid.");
+
+            shipment.status = ShipmentStatus.IN_CUSTOMS_INSPECTION;
+
+            emit ShipmentInCustomsInspection(_sender, shipment.receiver, shipment.pickupTime);
+        }
+
 
     function completeShipment(address _sender, address _receiver, uint256 _index) public {
         Shipment storage shipment = shipments[_sender][_index];
         TyepShipment storage tyepShipment = tyepShipments[_index];
 
         require(shipment.receiver == _receiver, "Invalid receiver.");
-        require(shipment.status == ShipmentStatus.IN_TRANSIT, "Shipment not in transit.");
+        require(shipment.status == ShipmentStatus.IN_CUSTOMS_INSPECTION, "Shipment not verified by customs.");
         require(!shipment.isPaid, "Shipment already paid.");
 
          shipment.status = ShipmentStatus.DELIVERED;
@@ -119,6 +150,5 @@ contract Tracking {
     {
         return tyepShipments;
     }
-
    
 }

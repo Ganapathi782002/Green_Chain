@@ -14,6 +14,8 @@ import RestaurantRegister from "./RestaurantRegister";
 import RestaurantLogin from "./RestaurantLogin";
 import FarmerLogin from "./FarmerLogin";
 import Tracking from "./Tracking";
+import Transport from "./Transport";
+import Customs from "./Customs";
 //SVG
 import Nav1 from "./SVG/Nav1";
 import Nav2 from "./SVG/Nav2";
@@ -39,6 +41,8 @@ export {
   Restaurant,
   RestaurantRegister,
   RestaurantLogin,
+  Transport,
+  Customs,
   //SVG
   Nav1,
   Nav2,

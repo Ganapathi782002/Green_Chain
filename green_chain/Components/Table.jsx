@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
-import { auth as firebaseAuth, db } from '../firebaseConfig';
+import React, { useState, useEffect } from "react";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { auth as firebaseAuth, db } from "../firebaseConfig";
 
 const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
   const [userRole, setUserRole] = useState(null);
@@ -14,33 +21,33 @@ const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
   }, []);
 
   const getUserRole = async (userId) => {
-    const roleRef = doc(db, 'role', userId);
+    const roleRef = doc(db, "role", userId);
     try {
       const roleDoc = await getDoc(roleRef);
       if (roleDoc.exists()) {
         const role = roleDoc.data().role;
         setUserRole(role);
-        console.log('User Role:', role);
+        console.log("User Role:", role);
       }
     } catch (error) {
-      console.error('Error getting user role:', error);
+      console.error("Error getting user role:", error);
     }
   };
 
   const converTime = (time) => {
     const newTime = new Date(time);
-    const dataTime = new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
+    const dataTime = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
     }).format(newTime);
 
     return dataTime;
   };
 
-  if (userRole === 'restaurant owner') {
-    return (
-      <div className="max-w-screen-xl mx-auto px-4 md:px-8">
+  // if (userRole === 'restaurant owner') {
+  return (
+    <div className="max-w-screen-xl mx-auto px-4 md:px-8">
       <div className="items-start justify-between md:flex">
         <div className="max-w-lg">
           <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">
@@ -75,46 +82,51 @@ const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y">
-            {allShipmentsdata?.map((shipment, idx) => ( //Question mark is added to avoid undefined 
-              <tr key={idx}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {shipment.sender.slice(0, 15)}...
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {shipment.receiver.slice(0, 15)}...
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {converTime(shipment.pickupTime)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {shipment.distance} Kg
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {shipment.price}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {shipment.deliveryTime}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {shipment.isPaid ? " Completed" : "Not Complete"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {shipment.status == 0
-                    ? "Pending"
-                    : shipment.status == 1
-                    ? "IN_TRANSIT"
-                    : "Delivered"}
-                </td>
-              </tr>
-            ))}
+            {allShipmentsdata?.map(
+              (
+                shipment,
+                idx //Question mark is added to avoid undefined
+              ) => (
+                <tr key={idx}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shipment.sender.slice(0, 15)}...
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shipment.receiver.slice(0, 15)}...
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {converTime(shipment.pickupTime)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shipment.distance} Kg
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shipment.price}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shipment.deliveryTime}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shipment.isPaid ? " Completed" : "Not Complete"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shipment.status == 0
+                      ? "Pending"
+                      : shipment.status == 1
+                      ? "In Transmission"
+                      : shipment.status == 2
+                      ? "Received By Transporter"
+                      : shipment.status == 3
+                      ? "In Customs Inspection"
+                      : "Delivered"}
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
     </div>
-    );
-  } else {
-    return null; // Render nothing for users with roles other than "restaurant owner"
-  }
+  );
 };
-
 export default YourComponent;
