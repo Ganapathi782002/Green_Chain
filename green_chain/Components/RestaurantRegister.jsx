@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { db, auth } from "../firebaseConfig"; // Import Firebase auth
-import { collection, addDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, query, where, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -70,7 +70,9 @@ const RestaurantRegistration = () => {
       const { email, password } = formData;
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+      const roleRef = doc(db, "role", user.uid);
+      const roleData = { role: "restaurant owner"};
+      await setDoc(roleRef, roleData);
       // Add the form data to Firestore
       const restaurantRef = collection(db, "Restaurants");
       await addDoc(restaurantRef, { ...formData, userId: user.uid }); // Associate the user with the restaurant

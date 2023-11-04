@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth as firebaseAuth,db } from "../firebaseConfig";
-import { collection, getDocs, addDoc, query, where } from "firebase/firestore"; // Import Firestore functions
+import { collection, getDocs, addDoc, query, where, doc, setDoc } from "firebase/firestore"; // Import Firestore functions
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { toast, ToastContainer } from "react-toastify"; // Import react-toastify
 import "react-toastify/dist/ReactToastify.css";
@@ -88,6 +88,10 @@ const FarmerRegister = () => {
       // User creation successful
       const user = userCredential.user;
       console.log("User registration successful!");
+      const roleRef = doc(db, "role", user.uid);
+      const roleData = { role: "farmer" };
+      await setDoc(roleRef, roleData);
+
       await addDoc(collection(db, "Farmers"), formData);
 
       // Handle success, e.g., show a success message or redirect

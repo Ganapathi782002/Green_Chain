@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth,db } from "../firebaseConfig";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions
 
 const FarmerLogin = () => {
   const [email, setEmail] = useState("");
@@ -13,10 +14,25 @@ const FarmerLogin = () => {
   const signIn = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential)  => {
         
-        toast.success("Login successful", { position: "top-right" });
-        
+        const user = userCredential.user;
+        const roleRef = doc(db, "role", user.uid);
+
+        try {
+          const roleSnapshot = await getDoc(roleRef);
+          const roleData = roleSnapshot.data();
+          if (roleData && roleData.role === "farmer") {
+            toast.success("Login successful", { position: "top-right" });
+            // Redirect to the farmer dashboard or the appropriate page
+            //router.push("/farmer-dashboard");
+          } else {
+            toast.error("You are not a farmer.", { position: "top-right" });
+          }
+        } catch (error) {
+          toast.error("Error checking user role.", { position: "top-right" });
+          console.error(error);
+        }
         
         //console.log(userCredential);
       })
