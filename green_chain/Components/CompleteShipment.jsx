@@ -1,4 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+import Web3 from "web3";
+
+function textToEthereumAddress(text) {
+  if (text && text.match(/^0x[0-9a-fA-F]{40}$/)) {
+    // If it's a valid Ethereum address, return the checksummed address
+    return Web3.utils.toChecksumAddress(text);
+  } else {
+    // Handle the case where the text is not a valid Ethereum address
+    throw new Error('Invalid Ethereum address format');
+  }
+}
 
 export default ({ completeModal, setCompleteModal, completeShipment }) => {
   const [completeShip, setCompleteShip] = useState({
@@ -6,9 +19,46 @@ export default ({ completeModal, setCompleteModal, completeShipment }) => {
     index: "",
   });
 
-  const changeStatus = async () => {
+  const [farmersData, setFarmersData] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch all farmers' data from Firestore
+    const fetchFarmersData = async () => {
+      try {
+        const farmersRef = collection(db, "Farmers");
+        const farmersSnapshot = await getDocs(farmersRef);
+
+        const farmers = [];
+        farmersSnapshot.forEach((doc) => {
+          const data = doc.data();
+
+          // Check if accountID is a valid Ethereum address
+          const accountID = textToEthereumAddress(data.accountID);
+
+          farmers.push({
+            id: doc.id,
+            name: data.name,
+            city: data.location, // Assuming the location field contains city information
+            accountID: accountID,
+          });
+        });
+
+        setFarmersData(farmers);
+      } catch (error) {
+        // Handle any errors that occur during data fetching
+        setError(error.message);
+      }
+    };
+
+    fetchFarmersData();
+  }, []);
+
+  const changeStatus = () => {
+    console.log("Receiver AccountID:", completeShip.recevier);
     completeShipment(completeShip);
   };
+
   return completeModal ? (
     <div className="fixed inset-0 z-10 overflow-y-auto">
       <div
@@ -42,19 +92,29 @@ export default ({ completeModal, setCompleteModal, completeShipment }) => {
             </h4>
 
             <form onSubmit={(e) => e.preventDefault()}>
-              <div className="relative mt-3">
-                <input
-                  type="text"
-                  placeholder="recevier"
-                  className="w-full pl-5 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            <div className="relative mt-3">
+                {/* Dropdown for selecting the receiver */}
+                <select
+                  value={completeShip.recevier}
                   onChange={(e) =>
                     setCompleteShip({
                       ...completeShip,
-                      recevier: e.target.value,
+                      receiver: e.target.value,
                     })
                   }
-                />
+                  className="w-full pl-5 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                >
+                  <option value="">
+                    Select a receiver
+                  </option>
+                  {farmersData.map((farmer) => (
+                    <option key={farmer.id} value={textToEthereumAddress(farmer.accountID)}>
+                      <strong>{farmer.name}</strong> ({farmer.city})
+                    </option>
+                  ))}
+                </select>
               </div>
+              {error && <p className="text-red-500">{error}</p>}
               <div className="relative mt-3">
                 <input
                   type="number"
