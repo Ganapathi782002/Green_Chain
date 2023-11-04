@@ -1,19 +1,46 @@
-export default ({ setCreateShipmentModel, allShipmentsdata }) => {
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { auth as firebaseAuth, db } from '../firebaseConfig';
+
+const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    // Get the user's role based on their UID
+    const user = firebaseAuth.currentUser;
+    if (user) {
+      getUserRole(user.uid);
+    }
+  }, []);
+
+  const getUserRole = async (userId) => {
+    const roleRef = doc(db, 'role', userId);
+    try {
+      const roleDoc = await getDoc(roleRef);
+      if (roleDoc.exists()) {
+        const role = roleDoc.data().role;
+        setUserRole(role);
+        console.log('User Role:', role);
+      }
+    } catch (error) {
+      console.error('Error getting user role:', error);
+    }
+  };
+
   const converTime = (time) => {
     const newTime = new Date(time);
-    const dataTime = new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+    const dataTime = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
     }).format(newTime);
 
     return dataTime;
   };
 
-  console.log(allShipmentsdata);
-
-  return (
-    <div className="max-w-screen-xl mx-auto px-4 md:px-8">
+  if (userRole === 'restaurant owner') {
+    return (
+      <div className="max-w-screen-xl mx-auto px-4 md:px-8">
       <div className="items-start justify-between md:flex">
         <div className="max-w-lg">
           <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">
@@ -84,5 +111,10 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
         </table>
       </div>
     </div>
-  );
+    );
+  } else {
+    return null; // Render nothing for users with roles other than "restaurant owner"
+  }
 };
+
+export default YourComponent;

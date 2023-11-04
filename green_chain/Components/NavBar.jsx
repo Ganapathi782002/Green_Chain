@@ -7,11 +7,14 @@ import { ToastContainer, toast } from "react-toastify";
 import { signOut } from "firebase/auth";
 import introJs from 'intro.js';
 import 'intro.js/introjs.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 export default () => {
   const [state, setState] = useState(false);
   const [showFarmersOptions, setShowFarmersOptions] = useState(false);
   const [showRestaurantsOptions, setShowRestaurantsOptions] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false); // State for managing notifications
   const { currentUser, connectWallet } = useContext(TrackingContext);
 
   useEffect(() => {
@@ -100,10 +103,8 @@ export default () => {
               className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
               onClick={() =>{
-                setShowFarmersOptions(!showFarmersOptions)
-                setShowRestaurantsOptions(false)
-                
-                
+                setShowFarmersOptions(!showFarmersOptions);
+                setShowRestaurantsOptions(false);
               }}
             >
               Farmers
@@ -127,7 +128,7 @@ export default () => {
                 </Link>
                 <Link href="/tracking">
                   <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
-                     Tracking
+                    Tracking
                   </li>
                 </Link>
               </ul>
@@ -139,9 +140,9 @@ export default () => {
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
               onClick={() => 
                 {
-                  setShowRestaurantsOptions(!showRestaurantsOptions)
-                  setShowFarmersOptions(false)
-              }}
+                  setShowRestaurantsOptions(!showRestaurantsOptions);
+                  setShowFarmersOptions(false);
+                }}
             >
               Restaurants
             </button>
@@ -174,7 +175,7 @@ export default () => {
         <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
           {currentUser ? (
             <p className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex">
-              {currentUser.slice(0, 25)}..
+              Welcome, {currentUser.displayName || currentUser.slice(0, 25)}..
             </p>
           ) : (
             <button
@@ -184,21 +185,35 @@ export default () => {
               >
                 Connect Wallet
                 <Nav3 />
+            </button>
+          )}
+          {/* Notifications Bell */}
+          <div className="relative">
+            {currentUser && (
+              <button
+                className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
+                  font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
+                onClick={() => setShowNotifications(!showNotifications)}
+              >
+                <FontAwesomeIcon icon={faBell} />
               </button>
             )}
+            {showNotifications && (
+              {/* Notification content goes here */}
+            )}
           </div>
-          {auth.currentUser && (
-            <div className="">
-              <button
-                onClick={() => signout()}
-                className="ml-4 flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover.bg-gray-700 active.bg-gray-900 rounded-full md.inline-flex"
-              >
-                Sign Out
-              </button>
-            </div>
-          )}
         </div>
-      </nav>
-    );
-  };
-  
+        {auth.currentUser && (
+          <div className="">
+            <button
+              onClick={() => signout()}
+              className="ml-4 flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover.bg-gray-700 active.bg-gray-900 rounded-full md.inline-flex"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+};
