@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Str1 } from "../Components/index";
+import { db } from "../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 import Web3 from "web3";
 
 function textToEthereumAddress(text) {
@@ -17,6 +19,41 @@ export default ({ transportModal, setTransportModal, markReceivedByTransporter }
     receiver: "",
     index: "",
   });
+
+  const [farmersData, setFarmersData] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch all farmers' data from Firestore
+    const fetchFarmersData = async () => {
+      try {
+        const farmersRef = collection(db, "Farmers");
+        const farmersSnapshot = await getDocs(farmersRef);
+
+        const farmers = [];
+        farmersSnapshot.forEach((doc) => {
+          const data = doc.data();
+
+          // Check if accountID is a valid Ethereum address
+          const accountID = textToEthereumAddress(data.accountID);
+
+          farmers.push({
+            id: doc.id,
+            name: data.name,
+            city: data.location, // Assuming the location field contains city information
+            accountID: accountID,
+          });
+        });
+
+        setFarmersData(farmers);
+      } catch (error) {
+        // Handle any errors that occur during data fetching
+        setError(error.message);
+      }
+    };
+
+    fetchFarmersData();
+  }, []);
 
   const markReceived = () => {
     const receiver = textToEthereumAddress(getProduct.receiver);
@@ -40,19 +77,29 @@ export default ({ transportModal, setTransportModal, markReceivedByTransporter }
             </h4>
 
             <form onSubmit={(e) => e.preventDefault()}>
-              <div className="relative mt-3">
-                <input
-                  type="text"
-                  placeholder="receiver"
-                  className="w-full pl-5 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            <div className="relative mt-3">
+                {/* Dropdown for selecting the receiver */}
+                <select
+                  value={getProduct.reveiver}
                   onChange={(e) =>
                     setGetProduct({
                       ...getProduct,
                       receiver: e.target.value,
                     })
                   }
-                />
+                  className="w-full pl-5 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                >
+                  <option value="">
+                    Select a receiver
+                  </option>
+                  {farmersData.map((farmer) => (
+                    <option key={farmer.id} value={textToEthereumAddress(farmer.accountID)}>
+                      <strong>{farmer.name}</strong> ({farmer.city})
+                    </option>
+                  ))}
+                </select>
               </div>
+              {error && <p className="text-red-500">{error}</p>}
               <div className="relative mt-3">
                 <input
                   type="text"

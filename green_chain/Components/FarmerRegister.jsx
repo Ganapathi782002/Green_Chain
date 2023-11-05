@@ -41,7 +41,7 @@ const FarmerRegister = () => {
         // The collection is empty, so create it if it doesn't exist
         console.log("The 'Farmers' collection does not exist. Creating it...");
         await addDoc(farmersRef, { initialized: true });
-      }
+      } 
     } catch (error) {
       console.error("Error checking 'Farmers' collection:", error);
     }
@@ -92,7 +92,11 @@ const FarmerRegister = () => {
       const roleData = { role: "farmer" };
       await setDoc(roleRef, roleData);
 
-      await addDoc(collection(db, "Farmers"), formData);
+      // await addDoc(collection(db, "Farmers"), formData);
+
+      const farmersRef = collection(db, "Farmers");
+      const farmerDocRef = doc(farmersRef, user.uid); // Use user's ID as the document ID
+      await setDoc(farmerDocRef, formData);
 
       // Handle success, e.g., show a success message or redirect
       toast.success("Farmer registration successful!", {

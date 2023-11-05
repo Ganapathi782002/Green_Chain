@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
-import emailjs from "@emailjs/browser";
+import { collection, getDocs, Timestamp, query, where, doc, getDoc } from "firebase/firestore";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { auth } from "../firebaseConfig";
+import { addDoc, getDocs as getDocsInvitations, collection as invitationsCollection } from "firebase/firestore";
+
+const user = auth.currentUser;
+const restaurantID = user.uid;
 
 const ViewAllFarmers = () => {
   const [farmers, setFarmers] = useState([]);
@@ -17,7 +21,6 @@ const ViewAllFarmers = () => {
 
       const farmerData = [];
       farmersSnapshot.forEach((doc) => {
-        // Include email in the data
         const data = doc.data();
         farmerData.push({ id: doc.id, ...data });
       });
@@ -32,28 +35,76 @@ const ViewAllFarmers = () => {
     setExpanded(id === expanded ? null : id);
   };
 
-  const sendEmailToFarmer = async (farmerEmail) => {
-    try {
-      const templateParams = {
-        to_email: farmerEmail, // Set the recipient's email address
-        from_name: 'Your Name', // Replace with your name
-        message: 'Your custom message goes here.', // Replace with your custom message
-      };
+  const sendInvitation = async (restaurantId, farmerId) => {
+    const notificationsRef = collection(db, "invitation");
+    const currentTime = Timestamp.now();
 
-      const response = await emailjs.send(
-        'service_myontes', // Replace with your service ID
-        'template_o1otf6h', // Replace with your template ID
-        templateParams,
-        'rhp-i4OeiW7-BMsb1' // Replace with your user ID
+    try {
+      // Check if an invitation already exists for this farmer and restaurant
+
+      const invitationQuery = query(invitationsCollection(db, "invitation"),
+        where("restaurantId", "==", restaurantId),
+        where("farmerId", "==", farmerId),
       );
 
-      console.log('Email sent successfully:', response);
+      const farmersRef = collection(db, "Farmers");
+      const farmerDocRef = doc(farmersRef, farmerId);
 
-      // Handle success (e.g., show a success message to the user)
+      const docSnapshot = await getDoc(farmerDocRef);
+
+      var fname = null;
+
+      if (docSnapshot.exists()) {
+        const farmerData = docSnapshot.data();
+        const farmerName = farmerData.name;
+        fname = farmerName;
+      } else {
+        // Handle the case where the document doesn't exist
+        console.log("Farmer document not found for the given ID.");
+        toast.error("User not exist.", { position: "top-right" });
+        fname = null; // or any other suitable response
+      }
+
+      const restaurantRef = collection(db, "Restaurants");
+      const restaurantDocRef = doc(restaurantRef, restaurantID);
+
+      const docsSnapshot = await getDoc(restaurantDocRef);
+
+      var rname = null;
+
+      if (docsSnapshot.exists()) {
+        const restaurantData = docsSnapshot.data();
+        const restaurantName = restaurantData.name;
+        rname = restaurantName;
+      } else {
+        // Handle the case where the document doesn't exist
+        console.log("Restaurant Owner document not found for the given ID.");
+        toast.error("User not exist.", { position: "top-right" });
+        rname = null; // or any other suitable response
+      }
+
+      const invitationSnapshot = await getDocsInvitations(invitationQuery);
+
+      if (!invitationSnapshot.empty) {
+        // Invitation already sent, display a notification
+        toast.error("Invitation already sent.", { position: "top-right" });
+        return;
+      }
+
+      // Add a new notification document to the Notifications collection
+      await addDoc(notificationsRef, {
+        rname,
+        fname,
+        sentTime: currentTime,
+        status: "pending",
+      });
+
+      // Handle success
+      toast.success("Invitation sent successfully!", { position: "top-right" });
     } catch (error) {
-      console.error('Error sending email:', error);
-
-      // Handle the error (e.g., show an error message to the user)
+      // Handle error
+      console.error("Error sending invitation:", error);
+      toast.error("Error sending invitation. Please try again later.", { position: "top-right" });
     }
   };
 
@@ -78,7 +129,7 @@ const ViewAllFarmers = () => {
                 <p><strong>Farm Size:</strong> {farmer.farmSize}</p>
                 <p><strong>Cultivation Type:</strong> {farmer.cultivationType}</p>
                 <p><strong>Grade:</strong> {farmer.grade}</p>
-                <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105" onClick={() => sendEmailToFarmer(farmer.email)}>Send Email</button>
+                <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105" onClick={() => sendInvitation(restaurantID, farmer.id)}>Notify Farmer</button>
               </div>
             )}
           </div>

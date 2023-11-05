@@ -16,18 +16,7 @@ const RestaurantRegistration = () => {
     contact: "",
     email: "", // Add email field
     password: "", // Add password field
-    wasteType: [],
-    cookedWastes: {},
-    uncookedWastes: {},
   });
-
-  const wasteOptions = ["Cooked", "Uncooked"];
-  const wasteItems = {
-    cooked: ["Cooking oil & fats", "Plate leftovers", "Teabag & tea leaves", "Bread & bakery items"],
-    uncooked: ["Vegetable/Fruit Peels", "Egg Shells", "Meat/Fish Trimmings"],
-  };
-
-  const incrementOptions = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -53,15 +42,6 @@ const RestaurantRegistration = () => {
     }
   };
 
-  const handleWasteWeightChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      cookedWastes: { ...formData.cookedWastes, [name]: value },
-      uncookedWastes: { ...formData.uncookedWastes, [name]: value },
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -75,7 +55,8 @@ const RestaurantRegistration = () => {
       await setDoc(roleRef, roleData);
       // Add the form data to Firestore
       const restaurantRef = collection(db, "Restaurants");
-      await addDoc(restaurantRef, { ...formData, userId: user.uid }); // Associate the user with the restaurant
+      const restaurantDocRef = doc(restaurantRef, user.uid); // Use user's ID as the document ID
+      await setDoc(restaurantDocRef, formData);
 
       // Display a success toast
       toast.success("Restaurant registration successful!", { position: "top-right" });
@@ -183,73 +164,6 @@ const RestaurantRegistration = () => {
             className="border rounded-lg px-3 py-2 w-full"
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Type of Wastes Generated</label>
-          {wasteOptions.map((option) => (
-            <div key={option} className="mb-2">
-              <label>
-                <input
-                  type="checkbox"
-                  name={option}
-                  checked={formData.wasteType.includes(option)}
-                  onChange={handleInputChange}
-                  className="mr-2"
-                />
-                {option}
-              </label>
-            </div>
-          ))}
-        </div>
-        {formData.wasteType.includes("Cooked") && (
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Cooked Wastes</label>
-            {wasteItems.cooked.map((item) => (
-              <div key={item} className="mb-2">
-                <label htmlFor={item} className="block text-sm font-medium text-gray-700">
-                  {item}
-                </label>
-                <select
-                  id={item}
-                  name={item}
-                  value={formData.cookedWastes[item] || ""}
-                  onChange={handleWasteWeightChange}
-                  className="border rounded-lg px-3 py-2"
-                >
-                  {incrementOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option} kgs
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
-          </div>
-        )}
-        {formData.wasteType.includes("Uncooked") && (
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Uncooked Wastes</label>
-            {wasteItems.uncooked.map((item) => (
-              <div key={item} className="mb-2">
-                <label htmlFor={item} className="block text-sm font-medium text-gray-700">
-                  {item}
-                </label>
-                <select
-                  id={item}
-                  name={item}
-                  value={formData.uncookedWastes[item] || ""}
-                  onChange={handleWasteWeightChange}
-                  className="border rounded-lg px-3 py-2"
-                >
-                  {incrementOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option} kgs
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
-          </div>
-        )}
         <button type="submit" className="bg-blue-500 text-white font-semibold rounded-lg px-4 py-2">
           Submit
         </button>

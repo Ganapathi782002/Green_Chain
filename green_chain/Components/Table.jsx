@@ -7,32 +7,39 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import { auth as firebaseAuth, db } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 
 const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    // Get the user's role based on their UID
-    const user = firebaseAuth.currentUser;
-    if (user) {
-      getUserRole(user.uid);
-    }
+    const user = auth.currentUser;
+
+    const fetchUserRole = async () => {
+      try {
+        // Create a reference to the "role" collection in Firestore
+        const roleRef = doc(db, 'role', user.uid);
+        const roleSnapshot = await getDoc(roleRef);
+        const roleData = roleSnapshot.data();
+
+        // Check if the role data exists and contains a 'role' field
+        if (roleData && roleData.role) {
+          // Set the userRole state to the role value
+          setUserRole(roleData.role);
+        } else {
+          // Handle the case where the role data is missing or incomplete
+          setUserRole('unknown role');
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+        setUserRole('error');
+      }
+    };
+
+    fetchUserRole();
   }, []);
 
-  const getUserRole = async (userId) => {
-    const roleRef = doc(db, "role", userId);
-    try {
-      const roleDoc = await getDoc(roleRef);
-      if (roleDoc.exists()) {
-        const role = roleDoc.data().role;
-        setUserRole(role);
-        console.log("User Role:", role);
-      }
-    } catch (error) {
-      console.error("Error getting user role:", error);
-    }
-  };
+  
 
   const converTime = (time) => {
     const newTime = new Date(time);
@@ -45,7 +52,7 @@ const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
     return dataTime;
   };
 
-  // if (userRole === 'restaurant owner') {
+  
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
       <div className="items-start justify-between md:flex">

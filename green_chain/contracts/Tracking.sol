@@ -89,22 +89,26 @@ contract Tracking {
     }
     function markShipmentReceivedByTransporter(address _sender, uint256 _index) public {
             Shipment storage shipment = shipments[_sender][_index];
+            TyepShipment storage tyepShipment = tyepShipments[_index];
 
             require(shipment.status == ShipmentStatus.IN_TRANSIT, "Shipment is not in transit.");
 
             shipment.status = ShipmentStatus.RECEIVED_BY_TRANSPORTER;
+            tyepShipment.status = ShipmentStatus.RECEIVED_BY_TRANSPORTER;
 
                 emit ShipmentReceivedByTransporter(_sender, shipment.receiver, shipment.pickupTime);
     }
 
     function markShipmentInCustomsInspection(address _sender, uint256 _index) public {
             Shipment storage shipment = shipments[_sender][_index];
+            TyepShipment storage tyepShipment = tyepShipments[_index];
 
             require(shipment.status == ShipmentStatus.RECEIVED_BY_TRANSPORTER, "Shipment not received by transporter.");
             require(shipment.status != ShipmentStatus.IN_CUSTOMS_INSPECTION, "Shipment is already in customs inspection.");
             require(!shipment.isPaid, "Shipment is already paid.");
 
             shipment.status = ShipmentStatus.IN_CUSTOMS_INSPECTION;
+            tyepShipment.status = ShipmentStatus.IN_CUSTOMS_INSPECTION;
 
             emit ShipmentInCustomsInspection(_sender, shipment.receiver, shipment.pickupTime);
         }

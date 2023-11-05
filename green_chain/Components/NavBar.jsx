@@ -2,19 +2,20 @@ import { useEffect, useState, useContext } from "react";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 import { Nav1, Nav2, Nav3 } from "../Components/index";
 import Link from "next/link";
-import { auth } from "../firebaseConfig";
+// import { collection, getDocs, addDoc, query, where, doc, setDoc } from "firebase/firestore"; // Import Firestore functions
+// import { auth } from "../firebaseConfig";
 import { ToastContainer, toast } from "react-toastify";
 import { signOut } from "firebase/auth";
-import introJs from 'intro.js';
-import 'intro.js/introjs.css';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+// import introJs from 'intro.js';
+// import 'intro.js/introjs.css';
+import { auth } from "../firebaseConfig";
 
 export default () => {
   const [state, setState] = useState(false);
   const [showFarmersOptions, setShowFarmersOptions] = useState(false);
   const [showRestaurantsOptions, setShowRestaurantsOptions] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false); // State for managing notifications
+  const [showTransporterOptions, setShowTransporterOptions] = useState(false);
+  const [showCustomsOptions, setShowCustomsOptions] = useState(false);
   const { currentUser, connectWallet } = useContext(TrackingContext);
 
   useEffect(() => {
@@ -23,31 +24,33 @@ export default () => {
       if (!target.closest(".menu-btn") && !target.closest(".dropdown-options")) {
         setShowFarmersOptions(false);
         setShowRestaurantsOptions(false);
+        setShowTransporterOptions(false);
+        setShowCustomsOptions(false);
       }
     };
   }, []);
 
-  useEffect(() => {
-    const startIntro = () => {
-      const intro = introJs();
+  // useEffect(() => {
+  //   const startIntro = () => {
+  //     const intro = introJs();
 
-      intro.setOptions({
-        steps: [
-          {
-            element: document.querySelector('.connect-wallet-btn'), // Replace with the actual selector for your button
-            intro: 'Click here to connect your wallet.',
-            position: 'bottom',
-          },
-          // Add more steps for other elements if needed
-        ],
-      });
+  //     intro.setOptions({
+  //       steps: [
+  //         {
+  //           element: document.querySelector('.connect-wallet-btn'), // Replace with the actual selector for your button
+  //           intro: 'Click here to connect your wallet.',
+  //           position: 'bottom',
+  //         },
+  //         // Add more steps for other elements if needed
+  //       ],
+  //     });
 
-      intro.start();
-    };
+  //     intro.start();
+  //   };
 
-    // Start the tour when the component is mounted
-    startIntro();
-  }, []);
+  //   // Start the tour when the component is mounted
+  //   startIntro();
+  // }, []);
 
   const signout = () => {
     signOut(auth)
@@ -105,6 +108,8 @@ export default () => {
               onClick={() =>{
                 setShowFarmersOptions(!showFarmersOptions);
                 setShowRestaurantsOptions(false);
+                setShowTransporterOptions(false);
+                setShowCustomsOptions(false);
               }}
             >
               Farmers
@@ -131,6 +136,11 @@ export default () => {
                     Tracking
                   </li>
                 </Link>
+                <Link href="/farmerprofile">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Profile
+                  </li>
+                </Link>
               </ul>
             )}
           </div>
@@ -142,6 +152,8 @@ export default () => {
                 {
                   setShowRestaurantsOptions(!showRestaurantsOptions);
                   setShowFarmersOptions(false);
+                  setShowTransporterOptions(false);
+                  setShowCustomsOptions(false);
                 }}
             >
               Restaurants
@@ -168,6 +180,87 @@ export default () => {
                     Tracking
                   </li>
                 </Link>
+                <Link href="/restaurantprofile">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Profile
+                  </li>
+                </Link>
+              </ul>
+            )}
+          </div>
+          <div className="relative">
+            <button
+              className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
+              font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
+              onClick={() =>{
+                setShowTransporterOptions(!showTransporterOptions);
+                setShowRestaurantsOptions(false);
+                setShowFarmersOptions(false);
+                setShowCustomsOptions(false);
+              }}
+            >
+              Transporter
+            </button>
+            {showTransporterOptions && (
+              <ul className="absolute dropdown-options space-y-1 mt-2 bg-white border rounded-lg shadow-lg text-black-500">
+                <Link href="/transporterlogin">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Login
+                  </li>
+                </Link>
+                <Link href="/transporterregistration">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Register
+                  </li>
+                </Link>
+                {/* <Link href="#">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Tracking
+                  </li>
+                </Link> */}
+                <Link href="/transporterprofile">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Profile
+                  </li>
+                </Link>
+              </ul>
+            )}
+          </div>
+          <div className="relative">
+            <button
+              className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
+              font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
+              onClick={() =>{
+                setShowCustomsOptions(!showCustomsOptions);
+                setShowRestaurantsOptions(false);
+                setShowFarmersOptions(false);
+                setShowRestaurantsOptions(false);
+              }}
+            >
+              Customs
+            </button>
+            {showCustomsOptions && (
+              <ul className="absolute dropdown-options space-y-1 mt-2 bg-white border rounded-lg shadow-lg text-black-500">
+                <Link href="/customslogin">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Login
+                  </li>
+                </Link>
+                <Link href="/customsregister">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Register
+                  </li>
+                </Link>
+                {/* <Link href="#">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Tracking
+                  </li>
+                </Link> */}
+                <Link href="/customsprofile">
+                  <li className="cursor-pointer px-4 py-2 hover:bg-green-200">
+                    Profile
+                  </li>
+                </Link>
               </ul>
             )}
           </div>
@@ -175,7 +268,7 @@ export default () => {
         <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
           {currentUser ? (
             <p className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex">
-              Welcome, {currentUser.displayName || currentUser.slice(0, 25)}..
+              {currentUser.displayName || currentUser.slice(0, 25)}..
             </p>
           ) : (
             <button
@@ -188,20 +281,6 @@ export default () => {
             </button>
           )}
           {/* Notifications Bell */}
-          <div className="relative">
-            {currentUser && (
-              <button
-                className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
-                  font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
-                onClick={() => setShowNotifications(!showNotifications)}
-              >
-                <FontAwesomeIcon icon={faBell} />
-              </button>
-            )}
-            {showNotifications && (
-              {/* Notification content goes here */}
-            )}
-          </div>
         </div>
         {auth.currentUser && (
           <div className="">
