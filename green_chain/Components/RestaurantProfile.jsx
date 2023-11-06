@@ -100,6 +100,14 @@ const RestaurantProfile = () => {
           </div>
         </div>
       </div>
+      <div className="max-w-xl mx-auto mt-8">
+        <button className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline mr-4">
+          Update Profile
+        </button>
+        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+          Delete Profile
+        </button>
+      </div>
       <div className="max-w-3xl mx-auto bg-yellow-300 p-8 rounded shadow mt-8 mb-8">
         <h2 className="text-2xl font-bold mb-4">Invitations</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

@@ -7,7 +7,7 @@ import {
   query,
   where,
   getDocs,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import { auth } from "../firebaseConfig";
 
@@ -29,17 +29,16 @@ const FarmerProfile = () => {
           setUserData(userSnapshot.data());
         }
 
-        
         if (userData.name) {
           const invitationsRef = collection(db, "invitation");
           const q = query(invitationsRef, where("fname", "==", userData.name));
           const invitationsSnapshot = await getDocs(q);
           const invitationData = [];
-        
+
           invitationsSnapshot.forEach((doc) => {
             invitationData.push({ ...doc.data(), id: doc.id });
           });
-        
+
           setInvitations(invitationData);
         } else {
           // Handle the case when userData.name is undefined
@@ -61,25 +60,19 @@ const FarmerProfile = () => {
       const invitationRef = doc(db, "invitation", invitation.id);
       await updateDoc(invitationRef, { status: "accepted" });
     } catch (error) {
-      console.log("Error accepting invitation:",error);
+      console.log("Error accepting invitation:", error);
     }
   };
-  
-  
-  const handleReject = async (invitation) => {
-    
-      try {
-        const invitationRef = doc(db, "invitation", invitation.id);
-        await updateDoc(invitationRef, { status: "rejected" });
-  
-      } catch (error) {
-        console.error("Error rejecting invitation:", error);
-      }
 
+  const handleReject = async (invitation) => {
+    try {
+      const invitationRef = doc(db, "invitation", invitation.id);
+      await updateDoc(invitationRef, { status: "rejected" });
+    } catch (error) {
+      console.error("Error rejecting invitation:", error);
+    }
   };
-  
-  
-  
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -99,7 +92,9 @@ const FarmerProfile = () => {
                 </dd>
               </div>
               <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Email address</dt>
+                <dt className="text-sm font-medium text-gray-500">
+                  Email address
+                </dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                   {userData.email}
                 </dd>
@@ -111,7 +106,9 @@ const FarmerProfile = () => {
                 </dd>
               </div>
               <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Contact No</dt>
+                <dt className="text-sm font-medium text-gray-500">
+                  Contact No
+                </dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                   {userData.contact}
                 </dd>
@@ -123,7 +120,9 @@ const FarmerProfile = () => {
                 </dd>
               </div>
               <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Cultivation Method</dt>
+                <dt className="text-sm font-medium text-gray-500">
+                  Cultivation Method
+                </dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                   {userData.cultivationType}
                 </dd>
@@ -138,9 +137,17 @@ const FarmerProfile = () => {
           </div>
         </div>
       </div>
+      <div className="max-w-xl mx-auto mt-8">
+        <button className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline mr-4">
+          Update Profile
+        </button>
+        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+          Delete Profile
+        </button>
+      </div>
       <div className="max-w-3xl mx-auto bg-yellow-300 p-8 rounded shadow mt-8 mb-8">
         <h2 className="text-2xl font-bold mb-4">Invitations</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {invitations.map((invitation, index) => (
             <div
               key={index}
@@ -150,12 +157,24 @@ const FarmerProfile = () => {
                 Sender's Name: {invitation.rname}
               </p>
               <p>Status: {invitation.status}</p>
-              {invitation.status === "pending" && (
-                <div>
-                  <button onClick={() => handleAccept(invitation)}>Accept</button>
-                  <button onClick={() => handleReject(invitation)}>Reject</button>
-                </div>
-              )}
+              <div>
+                {invitation.status === "pending" && (
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => handleAccept(invitation)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleReject(invitation)}
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>

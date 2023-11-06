@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebaseConfig";
 import { collection, getDocs, Timestamp, query, where, doc, getDoc } from "firebase/firestore";
-import { toast } from 'react-toastify';
+import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { auth } from "../firebaseConfig";
 import { addDoc, getDocs as getDocsInvitations, collection as invitationsCollection } from "firebase/firestore";
@@ -129,12 +129,13 @@ const ViewAllFarmers = () => {
                 <p><strong>Farm Size:</strong> {farmer.farmSize}</p>
                 <p><strong>Cultivation Type:</strong> {farmer.cultivationType}</p>
                 <p><strong>Grade:</strong> {farmer.grade}</p>
-                <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300 transform hover:scale-105" onClick={() => sendInvitation(restaurantID, farmer.id)}>Notify Farmer</button>
+                <button className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300" onClick={() => sendInvitation(restaurantID, farmer.id)}>Notify Farmer</button>
               </div>
             )}
           </div>
         ))}
       </div>
+      <ToastContainer />
     </div>
   );
 };
