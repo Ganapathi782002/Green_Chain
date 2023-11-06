@@ -21,7 +21,10 @@ export default () => {
   useEffect(() => {
     document.onclick = (e) => {
       const target = e.target;
-      if (!target.closest(".menu-btn") && !target.closest(".dropdown-options")) {
+      if (
+        !target.closest(".menu-btn") &&
+        !target.closest(".dropdown-options")
+      ) {
         setShowFarmersOptions(false);
         setShowRestaurantsOptions(false);
         setShowTransporterOptions(false);
@@ -57,6 +60,7 @@ export default () => {
       .then(() => {
         toast.success("Logout successful!", { position: "top-right" });
         window.location.reload();
+        // <Link href="/"></Link>
       })
       .catch((error) => {
         console.error(error);
@@ -96,8 +100,10 @@ export default () => {
           }`}
         >
           <Link href="/">
-            <button className="menu-btn px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
-              font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex">
+            <button
+              className="menu-btn px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
+              font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
+            >
               Home
             </button>
           </Link>
@@ -105,7 +111,7 @@ export default () => {
             <button
               className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
-              onClick={() =>{
+              onClick={() => {
                 setShowFarmersOptions(!showFarmersOptions);
                 setShowRestaurantsOptions(false);
                 setShowTransporterOptions(false);
@@ -148,13 +154,12 @@ export default () => {
             <button
               className="menu-btn px-3 ml-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
-              onClick={() => 
-                {
-                  setShowRestaurantsOptions(!showRestaurantsOptions);
-                  setShowFarmersOptions(false);
-                  setShowTransporterOptions(false);
-                  setShowCustomsOptions(false);
-                }}
+              onClick={() => {
+                setShowRestaurantsOptions(!showRestaurantsOptions);
+                setShowFarmersOptions(false);
+                setShowTransporterOptions(false);
+                setShowCustomsOptions(false);
+              }}
             >
               Restaurants
             </button>
@@ -192,7 +197,7 @@ export default () => {
             <button
               className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
-              onClick={() =>{
+              onClick={() => {
                 setShowTransporterOptions(!showTransporterOptions);
                 setShowRestaurantsOptions(false);
                 setShowFarmersOptions(false);
@@ -230,14 +235,14 @@ export default () => {
             <button
               className="menu-btn ml-3 px-3 flex items-center justify-center gap-x-1 py-2 px-4 text-white
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
-              onClick={() =>{
+              onClick={() => {
                 setShowCustomsOptions(!showCustomsOptions);
                 setShowRestaurantsOptions(false);
                 setShowFarmersOptions(false);
                 setShowRestaurantsOptions(false);
               }}
             >
-              Customs
+              Green Customs
             </button>
             {showCustomsOptions && (
               <ul className="absolute dropdown-options space-y-1 mt-2 bg-white border rounded-lg shadow-lg text-black-500">
@@ -275,21 +280,21 @@ export default () => {
               onClick={() => connectWallet()}
               className="connect-wallet-btn flex items-center justify-center gap-x-1 py-2 px-4 text-white
               font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 rounded-full md:inline-flex"
-              >
-                Connect Wallet
-                <Nav3 />
+            >
+              Connect Wallet
+              <Nav3 />
             </button>
           )}
           {/* Notifications Bell */}
         </div>
         {auth.currentUser && (
           <div className="">
-            <button
-              onClick={() => signout()}
-              className="ml-4 flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover.bg-gray-700 active.bg-gray-900 rounded-full md.inline-flex"
-            >
-              Sign Out
-            </button>
+              <button
+                onClick={() => signout()}
+                className="ml-4 flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-gray-800 hover.bg-gray-700 active.bg-gray-900 rounded-full md.inline-flex"
+              >
+                Sign Out
+              </button>
           </div>
         )}
       </div>

@@ -1,86 +1,26 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-  // Table,
-  // Form,
-  // Services,
-  // Profile,
-  // CompleteShipment,
-  // GetShipment,
-  // StartShipment,
-  Farmers,
-  FarmerRegister,
-  Restaurant,
-  RestaurantRegister,
-} from "../Components/index";
-import { TrackingContext } from "../Conetxt/TrackingContext";
+import React from "react";
 
 const Index = () => {
-  const {
-    currentUser,
-    createShipment,
-    getAllShipment,
-    completeShipment,
-    getShipment,
-    startShipment,
-    getShipmentsCount,
-  } = useContext(TrackingContext);
-
-
-  const [createShipmentModel, setCreateShipmentModel] = useState(false);
-  const [openProfile, setOpenProfile] = useState(false);
-  const [startModal, setStartModal] = useState(false);
-  const [completeModal, setCompleteModal] = useState(false);
-  const [getModel, setGetModel] = useState(false);
-
-  const [allShipmentsdata, setAllShipmentsData] = useState([]);
-
-  useEffect(() => {
-    const getCampaignsData = getAllShipment();
-    const fetchData = async () => {
-      const allData = await getCampaignsData;
-      setAllShipmentsData(allData);
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <>
-      <h1>Home Page</h1>
-      {/* <Services
-        setOpenProfile={setOpenProfile}
-        setCompleteModal={setCompleteModal}
-        setGetModel={setGetModel}
-        setStartModal={setStartModal}
-      />
-      <Table
-        setCreateShipmentModel={setCreateShipmentModel}
-        allShipmentsdata={allShipmentsdata}
-      />
-      <Form
-        createShipmentModel={createShipmentModel}
-        createShipment={createShipment}
-        setCreateShipmentModel={setCreateShipmentModel}
-      />
-      <Profile
-        openProfile={openProfile}
-        setOpenProfile={setOpenProfile}
-        currentUser={currentUser}
-        getShipmentsCount={getShipmentsCount}
-      />
-      <CompleteShipment
-        completeModal={completeModal}
-        setCompleteModal={setCompleteModal}
-        completeShipment={completeShipment}
-      />
-      <GetShipment getModel={getModel} setGetModel={setGetModel} getShipment={getShipment} />
-      <StartShipment
-        startModal={startModal}
-        setStartModal={setStartModal}
-        startShipment={startShipment}
-      /> */}
+    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 flex flex-col justify-center items-center">
+      {/* Hero section with fadeInUp animation */}
+      <div className="bg-purple-500 text-white py-10 px-4 text-center relative animate__animated animate__fadeInUp">
+        <h1 className="text-4xl font-extrabold">
+          <span className="glow-text">Farm-to-Table Waste Management</span>
+        </h1>
+        <p className="mt-4 text-lg">
+          Connecting Farmers and Restaurants for Sustainable Waste Disposal
+        </p>
+      </div>
 
-    </>
+      {/* Call to Action with bounceIn animation */}
+      <div className="mt-8 bg-green-500 text-white py-4 px-4 rounded-lg text-center animate__animated animate__bounceIn">
+        <p className="text-lg">Join us in the journey towards sustainable waste management!</p>
+        <button className="mt-2 bg-white text-green-500 py-2 px-6 rounded-full font-semibold hover:bg-yellow-400 transition duration-300">
+          Get Started
+        </button>
+      </div>
+    </div>
   );
 };
 

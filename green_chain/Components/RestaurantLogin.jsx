@@ -5,11 +5,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { useRouter } from "next/router";
 
 const RestaurantLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const signIn = (e) => {
     e.preventDefault();
@@ -25,6 +27,9 @@ const RestaurantLogin = () => {
           const roleData = roleSnapshot.data();
           if (roleData && roleData.role === "restaurant owner") {
             toast.success("Login successful", { position: "top-right" });
+            setTimeout(() => {
+              router.reload();
+            }, 1500);
             // Redirect to the farmer dashboard or the appropriate page
             // router.push("/farmer-dashboard");
           } else {

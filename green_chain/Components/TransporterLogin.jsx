@@ -5,11 +5,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { useRouter } from "next/router";
 
 const TransporterLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const signIn = (e) => {
     e.preventDefault();
@@ -24,8 +26,9 @@ const TransporterLogin = () => {
           const roleData = roleSnapshot.data();
           if (roleData && roleData.role === "transporter") {
             toast.success("Login successful", { position: "top-right" });
-            // Redirect to the farmer dashboard or the appropriate page
-            //router.push("/farmer-dashboard");
+            setTimeout(() => {
+              router.reload();
+            }, 1500);
           } else {
             toast.error("You are not a farmer.", { position: "top-right" });
           }

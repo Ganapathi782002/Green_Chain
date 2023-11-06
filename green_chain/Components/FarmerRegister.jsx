@@ -285,7 +285,7 @@ const FarmerRegister = () => {
 
         {/* Submit button */}
         <button type="submit" className="bg-blue-500 text-white font-semibold rounded-lg px-4 py-2">
-          Submit
+          Register
         </button>
       </form>
       <ToastContainer />
