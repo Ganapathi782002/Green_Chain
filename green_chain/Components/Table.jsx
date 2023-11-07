@@ -52,6 +52,12 @@ const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
     return dataTime;
   };
 
+  // const addOneDay = (date) => {
+  //   const newDate = new Date(date);
+  //   newDate.setDate(newDate.getDate() + 1);
+  //   return newDate;
+  // };
+
   
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
@@ -111,7 +117,7 @@ const YourComponent = ({ setCreateShipmentModel, allShipmentsdata }) => {
                     {shipment.price}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {shipment.deliveryTime}
+                    {} Before 48 hrs
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {shipment.isPaid ? " Completed" : "Not Complete"}
